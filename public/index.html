@@ -4,202 +4,508 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mugisha's Bookstore — Kigali</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet"/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --glass-bg:     rgba(255,255,255,0.07);
+      --glass-border: rgba(255,255,255,0.15);
+      --glass-hover:  rgba(255,255,255,0.12);
+      --blur:         blur(24px);
+      --gold:         #f6c90e;
+      --gold-soft:    rgba(246,201,14,0.15);
+      --white:        #ffffff;
+      --text-muted:   rgba(255,255,255,0.55);
+      --radius:       18px;
+      --radius-sm:    10px;
+    }
+
+    /* ── Background ─────────────────────────────────── */
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f4f8;
-      color: #1a202c;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      background: #060616;
+      color: var(--white);
+      overflow-x: hidden;
     }
 
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 0%,   #3b1fa8 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 10%,  #0e3fcb 0%, transparent 55%),
+        radial-gradient(ellipse 70% 60% at 50% 100%, #160842 0%, transparent 60%),
+        #060616;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      animation: drift 18s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 { width: 520px; height: 520px; background: #6c2bd9; top: -120px; left: -120px; animation-duration: 20s; }
+    .orb-2 { width: 400px; height: 400px; background: #1a56db; bottom: -100px; right: -80px; animation-duration: 25s; animation-delay: -8s; }
+    .orb-3 { width: 300px; height: 300px; background: #9f1dc0; top: 40%;  left: 55%;  animation-duration: 15s; animation-delay: -4s; }
+
+    @keyframes drift {
+      from { transform: translate(0, 0)   scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.08); }
+    }
+
+    /* ── Layout ─────────────────────────────────────── */
+    .page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 60px; }
+
+    /* ── Header ─────────────────────────────────────── */
     header {
-      background: #2b6cb0;
-      color: white;
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
+      text-align: center;
+      padding: 60px 24px 40px;
+      position: relative;
+      z-index: 1;
     }
-    header h1 { font-size: 1.6rem; }
-    header p  { font-size: 0.9rem; opacity: 0.8; }
+    .header-icon { font-size: 3.2rem; margin-bottom: 14px; display: block; filter: drop-shadow(0 0 20px #f6c90e88); }
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 30%, #f6c90e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 1rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .stats-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--blur);
+      padding: 8px 22px;
+      border-radius: 100px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--gold);
+    }
+    .stats-bar span { color: white; }
 
-    .container { max-width: 900px; margin: 36px auto; padding: 0 20px; }
-
-    /* ── Cards ── */
-    .card {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
-      padding: 28px;
+    /* ── Glass panel ─────────────────────────────────── */
+    .glass {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-radius: var(--radius);
+      padding: 32px;
       margin-bottom: 28px;
     }
-    .card h2 {
-      font-size: 1.1rem;
-      color: #2b6cb0;
-      margin-bottom: 18px;
-      border-bottom: 2px solid #ebf4ff;
-      padding-bottom: 10px;
+    .glass h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .glass h2::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(246,201,14,0.4), transparent);
     }
 
-    /* ── Form ── */
+    /* ── Form ────────────────────────────────────────── */
     .form-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr auto;
-      gap: 12px;
+      grid-template-columns: 1fr 1fr 160px auto;
+      gap: 14px;
       align-items: end;
     }
-    label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: #4a5568; }
-    input {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1px solid #cbd5e0;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      transition: border-color .2s;
+    @media (max-width: 700px) {
+      .form-grid { grid-template-columns: 1fr; }
     }
-    input:focus { outline: none; border-color: #2b6cb0; }
 
-    /* ── Buttons ── */
-    button {
-      padding: 9px 20px;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.9rem;
+    .field label {
+      display: block;
+      font-size: 0.75rem;
       font-weight: 600;
-      cursor: pointer;
-      transition: opacity .2s;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
     }
-    button:hover { opacity: .85; }
-    .btn-primary  { background: #2b6cb0; color: white; }
-    .btn-success  { background: #276749; color: white; }
-    .btn-warning  { background: #c05621; color: white; padding: 6px 12px; font-size: 0.82rem; }
-    .btn-danger   { background: #c53030; color: white; padding: 6px 12px; font-size: 0.82rem; }
-    .btn-info     { background: #2c7a7b; color: white; }
+    .field input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      color: white;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color .25s, background .25s, box-shadow .25s;
+      outline: none;
+    }
+    .field input::placeholder { color: rgba(255,255,255,0.3); }
+    .field input:focus {
+      border-color: var(--gold);
+      background: rgba(246,201,14,0.06);
+      box-shadow: 0 0 0 3px rgba(246,201,14,0.12);
+    }
 
-    /* ── Toast ── */
+    /* ── Buttons ─────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #f6c90e, #e0a800);
+      color: #1a0a00;
+      box-shadow: 0 4px 20px rgba(246,201,14,0.35);
+    }
+    .btn-gold:hover { box-shadow: 0 6px 28px rgba(246,201,14,0.5); }
+
+    .btn-glass {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: white;
+      backdrop-filter: var(--blur);
+    }
+    .btn-glass:hover { background: var(--glass-hover); }
+
+    .btn-edit {
+      background: rgba(99,179,237,0.18);
+      border: 1px solid rgba(99,179,237,0.35);
+      color: #90cdf4;
+      padding: 8px 16px;
+      font-size: 0.8rem;
+    }
+    .btn-edit:hover { background: rgba(99,179,237,0.3); }
+
+    .btn-delete {
+      background: rgba(252,129,129,0.15);
+      border: 1px solid rgba(252,129,129,0.3);
+      color: #fc8181;
+      padding: 8px 16px;
+      font-size: 0.8rem;
+    }
+    .btn-delete:hover { background: rgba(252,129,129,0.28); }
+
+    .btn-save {
+      background: linear-gradient(135deg, #48bb78, #2f855a);
+      color: white;
+      box-shadow: 0 4px 16px rgba(72,187,120,0.35);
+    }
+    .btn-cancel-modal {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+    }
+
+    /* ── Search ──────────────────────────────────────── */
+    .search-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .search-row .field { flex: 1; margin: 0; }
+
+    /* ── Books grid ───────────────────────────────────── */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── Book card ────────────────────────────────────── */
+    .book-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      transition: transform .3s, box-shadow .3s, border-color .3s;
+      animation: cardIn .4s ease both;
+    }
+    .book-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+      border-color: rgba(255,255,255,0.28);
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Spine */
+    .book-spine {
+      height: 5px;
+      width: 100%;
+    }
+
+    .book-body { padding: 22px 22px 18px; }
+
+    .book-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 14px;
+    }
+
+    .book-icon { font-size: 2.4rem; margin-bottom: 12px; display: block; }
+
+    .book-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 8px;
+      color: white;
+    }
+
+    .book-author {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .book-price {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--gold-soft);
+      border: 1px solid rgba(246,201,14,0.3);
+      color: var(--gold);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 18px;
+    }
+
+    .book-id {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.22);
+      font-family: monospace;
+      word-break: break-all;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .book-actions {
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 16px;
+    }
+
+    /* ── Empty state ─────────────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state .empty-icon { font-size: 4rem; margin-bottom: 16px; display: block; opacity: 0.5; }
+    .empty-state p { font-size: 1rem; }
+
+    /* ── Toast ───────────────────────────────────────── */
     #toast {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 12px 22px;
-      border-radius: 8px;
+      bottom: 28px;
+      right: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px;
+      border-radius: 12px;
       color: white;
       font-weight: 600;
       font-size: 0.9rem;
       opacity: 0;
       pointer-events: none;
-      transition: opacity .3s;
-      z-index: 999;
+      transform: translateY(12px);
+      transition: opacity .3s, transform .3s;
+      z-index: 9999;
+      backdrop-filter: var(--blur);
+      border: 1px solid rgba(255,255,255,0.15);
+      max-width: 320px;
     }
-    #toast.show { opacity: 1; }
-    #toast.ok  { background: #276749; }
-    #toast.err { background: #c53030; }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.ok  { background: rgba(39,103,73,0.85); }
+    #toast.err { background: rgba(154,44,44,0.85); }
 
-    /* ── Table ── */
-    table { width: 100%; border-collapse: collapse; }
-    th {
-      background: #ebf4ff;
-      color: #2b6cb0;
-      text-align: left;
-      padding: 10px 14px;
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
-    td { padding: 11px 14px; border-bottom: 1px solid #e2e8f0; font-size: 0.93rem; vertical-align: middle; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #f7fafc; }
-    .actions { display: flex; gap: 6px; }
-    .empty { text-align: center; color: #718096; padding: 30px; }
-
-    /* ── Search row ── */
-    .search-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-    .search-row input { flex: 1; }
-
-    /* ── Modal ── */
+    /* ── Modal ───────────────────────────────────────── */
     .overlay {
       display: none;
       position: fixed; inset: 0;
-      background: rgba(0,0,0,.45);
-      z-index: 100;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(6px);
+      z-index: 500;
       align-items: center;
       justify-content: center;
+      padding: 20px;
     }
     .overlay.open { display: flex; }
+
     .modal {
-      background: white;
-      border-radius: 10px;
-      padding: 32px;
-      width: 420px;
-      max-width: 95vw;
-      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+      background: rgba(18, 10, 50, 0.92);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border-radius: var(--radius);
+      padding: 36px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+      animation: modalIn .3s cubic-bezier(.34,1.56,.64,1) both;
     }
-    .modal h2 { color: #2b6cb0; margin-bottom: 20px; }
-    .modal .field { margin-bottom: 14px; }
-    .modal-btns { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
-    .btn-cancel { background: #e2e8f0; color: #4a5568; }
+    @keyframes modalIn {
+      from { opacity:0; transform: scale(.92) translateY(20px); }
+      to   { opacity:1; transform: scale(1) translateY(0); }
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .modal-header .icon { font-size: 1.6rem; }
+    .modal-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: white;
+    }
+    .modal .field { margin-bottom: 16px; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+
+    /* ── Spine colors ────────────────────────────────── */
+    .spine-0 { background: linear-gradient(90deg, #9333ea, #7c3aed); }
+    .spine-1 { background: linear-gradient(90deg, #2563eb, #1d4ed8); }
+    .spine-2 { background: linear-gradient(90deg, #db2777, #be185d); }
+    .spine-3 { background: linear-gradient(90deg, #059669, #047857); }
+    .spine-4 { background: linear-gradient(90deg, #d97706, #b45309); }
+    .spine-5 { background: linear-gradient(90deg, #dc2626, #b91c1c); }
+    .spine-6 { background: linear-gradient(90deg, #0891b2, #0e7490); }
+    .spine-7 { background: linear-gradient(90deg, #65a30d, #4d7c0f); }
+
+    /* ── Book emojis cycle ───────────────────────────── */
   </style>
 </head>
 <body>
 
+<div class="bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- ── HEADER ─────────────────────────────────────── -->
 <header>
-  <div>
-    <h1>Mugisha's Bookstore</h1>
-    <p>Kigali, Rwanda — Book Management System</p>
+  <span class="header-icon">📚</span>
+  <h1>Mugisha's Bookstore</h1>
+  <p>Kigali, Rwanda &mdash; Book Management System</p>
+  <div class="stats-bar">
+    📖 &nbsp;<span id="bookCount">0</span> books in the collection
   </div>
 </header>
 
-<div class="container">
+<div class="page">
 
-  <!-- ADD BOOK -->
-  <div class="card">
-    <h2>Add New Book</h2>
+  <!-- ── ADD BOOK ─────────────────────────────────── -->
+  <div class="glass">
+    <h2>✦ Add New Book</h2>
     <div class="form-grid">
-      <div>
-        <label for="title">Title</label>
+      <div class="field">
+        <label>Book Title</label>
         <input id="title" placeholder="e.g. Things Fall Apart" />
       </div>
-      <div>
-        <label for="author">Author</label>
+      <div class="field">
+        <label>Author</label>
         <input id="author" placeholder="e.g. Chinua Achebe" />
       </div>
-      <div>
-        <label for="price">Price (RWF)</label>
+      <div class="field">
+        <label>Price (RWF)</label>
         <input id="price" type="number" placeholder="e.g. 5000" />
       </div>
-      <div>
-        <button class="btn-primary" onclick="addBook()">Add Book</button>
+      <div class="field">
+        <label style="opacity:0">add</label>
+        <button class="btn btn-gold" onclick="addBook()">＋ Add Book</button>
       </div>
     </div>
   </div>
 
-  <!-- ALL BOOKS -->
-  <div class="card">
-    <h2>All Books</h2>
+  <!-- ── BOOKS COLLECTION ──────────────────────────── -->
+  <div class="glass">
+    <h2>✦ Book Collection</h2>
+
     <div class="search-row">
-      <input id="searchId" placeholder="Search by Book ID…" />
-      <button class="btn-info" onclick="searchById()">Find by ID</button>
-      <button class="btn-primary" onclick="loadBooks()">Show All</button>
+      <div class="field">
+        <input id="searchId" placeholder="🔍  Search by Book ID…" />
+      </div>
+      <button class="btn btn-glass" onclick="searchById()">Find by ID</button>
+      <button class="btn btn-glass" onclick="loadBooks()">Show All</button>
     </div>
-    <div id="tableWrap">
-      <p class="empty">Loading books…</p>
+
+    <div id="booksWrap">
+      <div class="empty-state">
+        <span class="empty-icon">📦</span>
+        <p>Loading books…</p>
+      </div>
     </div>
   </div>
 
 </div>
 
-<!-- EDIT MODAL -->
+<!-- ── EDIT MODAL ────────────────────────────────── -->
 <div class="overlay" id="editOverlay">
   <div class="modal">
-    <h2>Edit Book</h2>
+    <div class="modal-header">
+      <span class="icon">✏️</span>
+      <h2>Edit Book</h2>
+    </div>
     <input type="hidden" id="editId" />
     <div class="field">
-      <label>Title</label>
+      <label>Book Title</label>
       <input id="editTitle" />
     </div>
     <div class="field">
@@ -211,8 +517,8 @@
       <input id="editPrice" type="number" />
     </div>
     <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-success" onclick="saveEdit()">Save Changes</button>
+      <button class="btn btn-cancel-modal" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-save" onclick="saveEdit()">💾 Save Changes</button>
     </div>
   </div>
 </div>
@@ -220,90 +526,94 @@
 <div id="toast"></div>
 
 <script>
-  const API = '/api/books';
+  const API   = '/api/books';
+  const ICONS = ['📗','📘','📙','📕','📒','📔','📓','📚'];
 
-  // ── Toast ──────────────────────────────────────────
+  // ── Toast ────────────────────────────────────────
   function toast(msg, type = 'ok') {
     const el = document.getElementById('toast');
-    el.textContent = msg;
+    el.innerHTML = (type === 'ok' ? '✅' : '❌') + ' ' + msg;
     el.className = `show ${type}`;
-    setTimeout(() => el.className = '', 2800);
+    setTimeout(() => { el.className = ''; }, 3000);
   }
 
-  // ── Render table ───────────────────────────────────
-  function renderTable(books) {
-    const wrap = document.getElementById('tableWrap');
+  // ── Render cards ─────────────────────────────────
+  function renderCards(books) {
+    const wrap = document.getElementById('booksWrap');
+    document.getElementById('bookCount').textContent = books.length;
+
     if (!books.length) {
-      wrap.innerHTML = '<p class="empty">No books found.</p>';
+      wrap.innerHTML = `
+        <div class="empty-state">
+          <span class="empty-icon">🗂️</span>
+          <p>No books yet — add one above!</p>
+        </div>`;
       return;
     }
-    wrap.innerHTML = `
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Price (RWF)</th>
-            <th>ID</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${books.map((b, i) => `
-            <tr>
-              <td>${i + 1}</td>
-              <td><strong>${b.title}</strong></td>
-              <td>${b.author}</td>
-              <td>${Number(b.price).toLocaleString()}</td>
-              <td style="font-size:.75rem;color:#718096">${b._id}</td>
-              <td>
-                <div class="actions">
-                  <button class="btn-warning" onclick="openEdit('${b._id}','${esc(b.title)}','${esc(b.author)}',${b.price})">Edit</button>
-                  <button class="btn-danger"  onclick="deleteBook('${b._id}')">Delete</button>
-                </div>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>`;
+
+    wrap.innerHTML = `<div class="books-grid">${books.map((b, i) => `
+      <div class="book-card" style="animation-delay:${i * 0.07}s">
+        <div class="book-spine spine-${i % 8}"></div>
+        <div class="book-body">
+          <div class="book-num">Book #${i + 1}</div>
+          <span class="book-icon">${ICONS[i % ICONS.length]}</span>
+          <div class="book-title">${escHtml(b.title)}</div>
+          <div class="book-author">
+            <span>✍️</span> ${escHtml(b.author)}
+          </div>
+          <div class="book-price">💰 RWF ${Number(b.price).toLocaleString()}</div>
+          <div class="book-id">ID: ${b._id}</div>
+          <div class="book-actions">
+            <button class="btn btn-edit" onclick="openEdit('${b._id}','${esc(b.title)}','${esc(b.author)}',${b.price})">
+              ✏️ Edit
+            </button>
+            <button class="btn btn-delete" onclick="deleteBook('${b._id}')">
+              🗑️ Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('')}</div>`;
   }
 
-  function esc(s) { return s.replace(/'/g, "\\'"); }
+  function esc(s)     { return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'"); }
+  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-  // ── Load all books ─────────────────────────────────
+  // ── Load all ──────────────────────────────────────
   async function loadBooks() {
+    document.getElementById('searchId').value = '';
     try {
-      const res = await fetch(API);
+      const res  = await fetch(API);
       const data = await res.json();
-      renderTable(data);
+      renderCards(data);
     } catch {
-      document.getElementById('tableWrap').innerHTML =
-        '<p class="empty" style="color:#c53030">Could not reach server. Is it running?</p>';
+      document.getElementById('booksWrap').innerHTML = `
+        <div class="empty-state">
+          <span class="empty-icon">⚠️</span>
+          <p style="color:#fc8181">Could not reach server — is it running?</p>
+        </div>`;
     }
   }
 
-  // ── Add book ───────────────────────────────────────
+  // ── Add book ──────────────────────────────────────
   async function addBook() {
     const title  = document.getElementById('title').value.trim();
     const author = document.getElementById('author').value.trim();
     const price  = Number(document.getElementById('price').value);
 
     if (!title || !author || !price) {
-      toast('Please fill in all fields.', 'err'); return;
+      toast('Please fill in all three fields.', 'err'); return;
     }
 
     const res = await fetch(API, {
-      method: 'POST',
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, author, price }),
+      body:    JSON.stringify({ title, author, price }),
     });
 
     if (res.ok) {
-      toast('Book added successfully!');
-      document.getElementById('title').value  = '';
-      document.getElementById('author').value = '';
-      document.getElementById('price').value  = '';
+      toast('Book added to the collection!');
+      ['title','author','price'].forEach(id => document.getElementById(id).value = '');
       loadBooks();
     } else {
       const err = await res.json();
@@ -311,36 +621,39 @@
     }
   }
 
-  // ── Search by ID ───────────────────────────────────
+  // ── Search by ID ──────────────────────────────────
   async function searchById() {
     const id = document.getElementById('searchId').value.trim();
-    if (!id) { toast('Enter a book ID first.', 'err'); return; }
+    if (!id) { toast('Paste a Book ID into the search field.', 'err'); return; }
 
     const res = await fetch(`${API}/${id}`);
     if (res.ok) {
       const book = await res.json();
-      renderTable([book]);
+      renderCards([book]);
+      document.getElementById('bookCount').textContent = '1 result';
     } else {
-      toast('Book not found (404).', 'err');
-      document.getElementById('tableWrap').innerHTML =
-        '<p class="empty" style="color:#c53030">No book found with that ID.</p>';
+      toast('No book found with that ID (404).', 'err');
+      document.getElementById('booksWrap').innerHTML = `
+        <div class="empty-state">
+          <span class="empty-icon">🔍</span>
+          <p style="color:#fc8181">No book found with that ID.</p>
+        </div>`;
     }
   }
 
-  // ── Delete ─────────────────────────────────────────
+  // ── Delete ────────────────────────────────────────
   async function deleteBook(id) {
-    if (!confirm('Are you sure you want to delete this book?')) return;
-
+    if (!confirm('Delete this book permanently?')) return;
     const res = await fetch(`${API}/${id}`, { method: 'DELETE' });
     if (res.ok) {
-      toast('Book deleted.');
+      toast('Book removed from the collection.');
       loadBooks();
     } else {
       toast('Book not found (404).', 'err');
     }
   }
 
-  // ── Edit modal ─────────────────────────────────────
+  // ── Edit modal ────────────────────────────────────
   function openEdit(id, title, author, price) {
     document.getElementById('editId').value     = id;
     document.getElementById('editTitle').value  = title;
@@ -364,9 +677,9 @@
     }
 
     const res = await fetch(`${API}/${id}`, {
-      method: 'PUT',
+      method:  'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, author, price }),
+      body:    JSON.stringify({ title, author, price }),
     });
 
     if (res.ok) {
@@ -379,12 +692,12 @@
     }
   }
 
-  // Close modal when clicking outside
   document.getElementById('editOverlay').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
   });
 
-  // Load on page open
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
   loadBooks();
 </script>
 </body>
