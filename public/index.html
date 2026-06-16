@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mugisha's Bookstore — Kigali</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #1a202c;
+    }
+
+    header {
+      background: #2b6cb0;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    header h1 { font-size: 1.6rem; }
+    header p  { font-size: 0.9rem; opacity: 0.8; }
+
+    .container { max-width: 900px; margin: 36px auto; padding: 0 20px; }
+
+    /* ── Cards ── */
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      color: #2b6cb0;
+      margin-bottom: 18px;
+      border-bottom: 2px solid #ebf4ff;
+      padding-bottom: 10px;
+    }
+
+    /* ── Form ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+    label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: #4a5568; }
+    input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: border-color .2s;
+    }
+    input:focus { outline: none; border-color: #2b6cb0; }
+
+    /* ── Buttons ── */
+    button {
+      padding: 9px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    button:hover { opacity: .85; }
+    .btn-primary  { background: #2b6cb0; color: white; }
+    .btn-success  { background: #276749; color: white; }
+    .btn-warning  { background: #c05621; color: white; padding: 6px 12px; font-size: 0.82rem; }
+    .btn-danger   { background: #c53030; color: white; padding: 6px 12px; font-size: 0.82rem; }
+    .btn-info     { background: #2c7a7b; color: white; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 22px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; }
+    #toast.ok  { background: #276749; }
+    #toast.err { background: #c53030; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      background: #ebf4ff;
+      color: #2b6cb0;
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    td { padding: 11px 14px; border-bottom: 1px solid #e2e8f0; font-size: 0.93rem; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f7fafc; }
+    .actions { display: flex; gap: 6px; }
+    .empty { text-align: center; color: #718096; padding: 30px; }
+
+    /* ── Search row ── */
+    .search-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .search-row input { flex: 1; }
+
+    /* ── Modal ── */
+    .overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay.open { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 10px;
+      padding: 32px;
+      width: 420px;
+      max-width: 95vw;
+      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+    }
+    .modal h2 { color: #2b6cb0; margin-bottom: 20px; }
+    .modal .field { margin-bottom: 14px; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+    .btn-cancel { background: #e2e8f0; color: #4a5568; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Mugisha's Bookstore</h1>
+    <p>Kigali, Rwanda — Book Management System</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ADD BOOK -->
+  <div class="card">
+    <h2>Add New Book</h2>
+    <div class="form-grid">
+      <div>
+        <label for="title">Title</label>
+        <input id="title" placeholder="e.g. Things Fall Apart" />
+      </div>
+      <div>
+        <label for="author">Author</label>
+        <input id="author" placeholder="e.g. Chinua Achebe" />
+      </div>
+      <div>
+        <label for="price">Price (RWF)</label>
+        <input id="price" type="number" placeholder="e.g. 5000" />
+      </div>
+      <div>
+        <button class="btn-primary" onclick="addBook()">Add Book</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALL BOOKS -->
+  <div class="card">
+    <h2>All Books</h2>
+    <div class="search-row">
+      <input id="searchId" placeholder="Search by Book ID…" />
+      <button class="btn-info" onclick="searchById()">Find by ID</button>
+      <button class="btn-primary" onclick="loadBooks()">Show All</button>
+    </div>
+    <div id="tableWrap">
+      <p class="empty">Loading books…</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+<div class="overlay" id="editOverlay">
+  <div class="modal">
+    <h2>Edit Book</h2>
+    <input type="hidden" id="editId" />
+    <div class="field">
+      <label>Title</label>
+      <input id="editTitle" />
+    </div>
+    <div class="field">
+      <label>Author</label>
+      <input id="editAuthor" />
+    </div>
+    <div class="field">
+      <label>Price (RWF)</label>
+      <input id="editPrice" type="number" />
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-success" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const API = '/api/books';
+
+  // ── Toast ──────────────────────────────────────────
+  function toast(msg, type = 'ok') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = `show ${type}`;
+    setTimeout(() => el.className = '', 2800);
+  }
+
+  // ── Render table ───────────────────────────────────
+  function renderTable(books) {
+    const wrap = document.getElementById('tableWrap');
+    if (!books.length) {
+      wrap.innerHTML = '<p class="empty">No books found.</p>';
+      return;
+    }
+    wrap.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Price (RWF)</th>
+            <th>ID</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${books.map((b, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td><strong>${b.title}</strong></td>
+              <td>${b.author}</td>
+              <td>${Number(b.price).toLocaleString()}</td>
+              <td style="font-size:.75rem;color:#718096">${b._id}</td>
+              <td>
+                <div class="actions">
+                  <button class="btn-warning" onclick="openEdit('${b._id}','${esc(b.title)}','${esc(b.author)}',${b.price})">Edit</button>
+                  <button class="btn-danger"  onclick="deleteBook('${b._id}')">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  function esc(s) { return s.replace(/'/g, "\\'"); }
+
+  // ── Load all books ─────────────────────────────────
+  async function loadBooks() {
+    try {
+      const res = await fetch(API);
+      const data = await res.json();
+      renderTable(data);
+    } catch {
+      document.getElementById('tableWrap').innerHTML =
+        '<p class="empty" style="color:#c53030">Could not reach server. Is it running?</p>';
+    }
+  }
+
+  // ── Add book ───────────────────────────────────────
+  async function addBook() {
+    const title  = document.getElementById('title').value.trim();
+    const author = document.getElementById('author').value.trim();
+    const price  = Number(document.getElementById('price').value);
+
+    if (!title || !author || !price) {
+      toast('Please fill in all fields.', 'err'); return;
+    }
+
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, author, price }),
+    });
+
+    if (res.ok) {
+      toast('Book added successfully!');
+      document.getElementById('title').value  = '';
+      document.getElementById('author').value = '';
+      document.getElementById('price').value  = '';
+      loadBooks();
+    } else {
+      const err = await res.json();
+      toast(err.error || 'Failed to add book.', 'err');
+    }
+  }
+
+  // ── Search by ID ───────────────────────────────────
+  async function searchById() {
+    const id = document.getElementById('searchId').value.trim();
+    if (!id) { toast('Enter a book ID first.', 'err'); return; }
+
+    const res = await fetch(`${API}/${id}`);
+    if (res.ok) {
+      const book = await res.json();
+      renderTable([book]);
+    } else {
+      toast('Book not found (404).', 'err');
+      document.getElementById('tableWrap').innerHTML =
+        '<p class="empty" style="color:#c53030">No book found with that ID.</p>';
+    }
+  }
+
+  // ── Delete ─────────────────────────────────────────
+  async function deleteBook(id) {
+    if (!confirm('Are you sure you want to delete this book?')) return;
+
+    const res = await fetch(`${API}/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      toast('Book deleted.');
+      loadBooks();
+    } else {
+      toast('Book not found (404).', 'err');
+    }
+  }
+
+  // ── Edit modal ─────────────────────────────────────
+  function openEdit(id, title, author, price) {
+    document.getElementById('editId').value     = id;
+    document.getElementById('editTitle').value  = title;
+    document.getElementById('editAuthor').value = author;
+    document.getElementById('editPrice').value  = price;
+    document.getElementById('editOverlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('editOverlay').classList.remove('open');
+  }
+
+  async function saveEdit() {
+    const id     = document.getElementById('editId').value;
+    const title  = document.getElementById('editTitle').value.trim();
+    const author = document.getElementById('editAuthor').value.trim();
+    const price  = Number(document.getElementById('editPrice').value);
+
+    if (!title || !author || !price) {
+      toast('All fields are required.', 'err'); return;
+    }
+
+    const res = await fetch(`${API}/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, author, price }),
+    });
+
+    if (res.ok) {
+      toast('Book updated successfully!');
+      closeModal();
+      loadBooks();
+    } else {
+      const err = await res.json();
+      toast(err.error || 'Update failed.', 'err');
+    }
+  }
+
+  // Close modal when clicking outside
+  document.getElementById('editOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Load on page open
+  loadBooks();
+</script>
+</body>
+</html>
